@@ -1,4 +1,4 @@
-Kode 2
+# Kode 2
 rm(list=ls())
 gc()
 
