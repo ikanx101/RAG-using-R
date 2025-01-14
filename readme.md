@@ -40,6 +40,8 @@ berikut:
     pip install transformers
     pip install 'transformers[torch]'
     pip install diffusers["torch"] transformers
+    pip install protobuf
+    pip install pandas
 
 Saya melakukan instalasi menggunakan perintah `pip`. Jadi pastikan `pip`
 sudah ter-*install* terlebih dahulu.
