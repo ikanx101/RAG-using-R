@@ -1,0 +1,43 @@
+---
+title: "Setting Awal"
+format: gfm
+editor: visual
+---
+
+Untuk bisa melakukan komputasi model Huggingface di _local computer_ menggunakan __R__, kita perlu membuat _virtual python environment_ dengancara sebagai berikut:
+
+### Tahap 1
+
+Masuk ke `terminal` sebagai _super user_.
+
+```
+sudo su
+```
+
+## Tahap 2
+
+Pastikan _python_ sudah ter-_install_ lalu lakukan _update_ sebagai berikut:
+
+```
+# kita update dan upgrade sistem linux nya
+apt update
+apt upgrade -y
+
+# kita akan install python3 environment terlebih dahulu
+apt install python3-venv
+python3 -m venv .env
+source .env/bin/activate
+```
+
+## Tahap 3
+
+_Install library_ `transformers` pada _local computer_ sebagai berikut:
+
+```
+# proses install transformers dan torch
+pip install transformers
+pip install 'transformers[torch]'
+pip install diffusers["torch"] transformers
+```
+
+Saya melakukan instalasi menggunakan perintah `pip`. Jadi pastikan `pip` sudah ter-_install_ terlebih dahulu.
