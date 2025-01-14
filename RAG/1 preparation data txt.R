@@ -12,7 +12,7 @@ library(tidytext)
 ncore = detectCores()
 
 # Membaca data komentar dan melakukan preprocessing sederhana
-setwd("~/RAG-using-R/raw story")
+setwd("~/RAG-using-R/RAG/raw story")
 file  = list.files(pattern = "*txt")
 
 # kita bikin function untuk mengambil datanya
@@ -27,6 +27,6 @@ ambilin = function(input){
 df = mclapply(file,ambilin,mc.cores = ncore) |> unlist()
 
 # kita akan save menjadi data yang ready
-setwd("~/RAG-using-R")
+setwd("~/RAG-using-R/RAG")
 komen = df
-save(komen,file = "to colab.rda")
+save(komen,file = "embed.rda")
