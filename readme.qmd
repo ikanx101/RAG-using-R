@@ -1,12 +1,18 @@
 ---
-title: "Setting Awal"
+title: "Read Me!"
 format: gfm
 editor: visual
 ---
 
-Untuk bisa melakukan komputasi model Huggingface di _local computer_ menggunakan __R__, kita perlu membuat _virtual python environment_ dengancara sebagai berikut:
+# Penjelasan
 
-### Tahap 1
+_Repository_ ini berisi semua model dan _framework_ LLM yang bisa digunakan di departemen market riset Nutrifood.
+
+# Setting Awal
+
+Untuk bisa melakukan komputasi model __Huggingface__ di _local computer_ menggunakan __R__, kita perlu membuat _virtual python environment_ dengan cara sebagai berikut:
+
+## Tahap 1
 
 Masuk ke `terminal` sebagai _super user_.
 

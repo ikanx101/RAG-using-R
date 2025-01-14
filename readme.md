@@ -1,11 +1,18 @@
+# Read Me!
+
+
+# Penjelasan
+
+*Repository* ini berisi semua model dan *framework* LLM yang bisa
+digunakan di departemen market riset Nutrifood.
+
 # Setting Awal
 
-
-Untuk bisa melakukan komputasi model Huggingface di *local computer*
+Untuk bisa melakukan komputasi model **Huggingface** di *local computer*
 menggunakan **R**, kita perlu membuat *virtual python environment*
-dengancara sebagai berikut:
+dengan cara sebagai berikut:
 
-### Tahap 1
+## Tahap 1
 
 Masuk ke `terminal` sebagai *super user*.
 
