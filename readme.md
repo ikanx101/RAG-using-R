@@ -3,7 +3,7 @@
 
 # Penjelasan
 
-*Repository* ini berisi semua model dan *framework* LLM yang bisa
+*Repository* ini berisi semua model dan *framework* **LLM** yang bisa
 digunakan di departemen market riset Nutrifood.
 
 # Setting Awal

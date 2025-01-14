@@ -6,7 +6,8 @@ editor: visual
 
 # Penjelasan
 
-_Repository_ ini berisi semua model dan _framework_ LLM yang bisa digunakan di departemen market riset Nutrifood.
+_Repository_ ini berisi semua model dan _framework_ __LLM__ yang bisa digunakan di departemen market riset Nutrifood.
+
 
 # Setting Awal
 
