@@ -6,6 +6,13 @@
 *Repository* ini berisi semua model dan *framework* **LLM** yang bisa
 digunakan di departemen market riset Nutrifood.
 
+Ada tiga jenis model:
+
+1.  *Sentiment analysis*,
+2.  *Clustering analysis* dengan menggunakan LLM untuk membuat
+    *embedding matrix*.
+3.  *RAG powered by* *language model* dan *QnA LLM*.
+
 # Setting Awal
 
 Untuk bisa melakukan komputasi model **Huggingface** di *local computer*

@@ -6,26 +6,32 @@ editor: visual
 
 # Penjelasan
 
-_Repository_ ini berisi semua model dan _framework_ __LLM__ yang bisa digunakan di departemen market riset Nutrifood.
+*Repository* ini berisi semua model dan *framework* **LLM** yang bisa digunakan di departemen market riset Nutrifood.
 
+
+Ada tiga jenis model:
+
+1. _Sentiment analysis_,
+2. _Clustering analysis_ dengan menggunakan LLM untuk membuat _embedding matrix_.
+1. _RAG powered by_ _language model_ dan _QnA LLM_.
 
 # Setting Awal
 
-Untuk bisa melakukan komputasi model __Huggingface__ di _local computer_ menggunakan __R__, kita perlu membuat _virtual python environment_ dengan cara sebagai berikut:
+Untuk bisa melakukan komputasi model **Huggingface** di *local computer* menggunakan **R**, kita perlu membuat *virtual python environment* dengan cara sebagai berikut:
 
 ## Tahap 1
 
-Masuk ke `terminal` sebagai _super user_.
+Masuk ke `terminal` sebagai *super user*.
 
-```
+```         
 sudo su
 ```
 
 ## Tahap 2
 
-Pastikan _python_ sudah ter-_install_ lalu lakukan _update_ sebagai berikut:
+Pastikan *python* sudah ter-*install* lalu lakukan *update* sebagai berikut:
 
-```
+```         
 # kita update dan upgrade sistem linux nya
 apt update
 apt upgrade -y
@@ -38,9 +44,9 @@ source .env/bin/activate
 
 ## Tahap 3
 
-_Install library_ `transformers` pada _local computer_ sebagai berikut:
+*Install library* `transformers` pada *local computer* sebagai berikut:
 
-```
+```         
 # proses install transformers dan torch
 pip install transformers
 pip install 'transformers[torch]'
@@ -49,4 +55,4 @@ pip install protobuf
 pip install pandas
 ```
 
-Saya melakukan instalasi menggunakan perintah `pip`. Jadi pastikan `pip` sudah ter-_install_ terlebih dahulu.
+Saya melakukan instalasi menggunakan perintah `pip`. Jadi pastikan `pip` sudah ter-*install* terlebih dahulu.
