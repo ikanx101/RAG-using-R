@@ -1,0 +1,38 @@
+---
+title: "Read Me!"
+format: gfm
+editor: visual
+---
+
+## Penjelasan Umum
+
+_Folder_ ini berisi _script_ bernama `sentimen.R` yang berisi algoritma untuk melakukan penilaian sentimen dari suatu kalimat.
+
+Cara kerjanya adalah sebagai berikut:
+
+```
+STEP 1
+  clean environment
+  panggil libraries dan python
+  
+STEP 2
+  ambil model LLM sentimen bahasa indonesia dari huggingface
+  
+STEP 3
+  input: 
+    kalimat yang hendak diuji
+  output:
+    sentimen dan skornya
+```
+
+## Cara Menggunakan
+
+Lakukan persiapan dengan _install_ semua bumbu yang diperlukan (_refer to_ artikel `Read Me` pada _folder_ sebelumnya).
+
+_Run_ skrip berikut ini pada __R__:
+
+```
+source("sentimen.R")
+```
+
+Untuk mengubah model LLM yang digunakan, silakan ubah nama model di Huggingface pada __baris 12__ di `sentimen.R`.
