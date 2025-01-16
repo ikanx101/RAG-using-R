@@ -1,0 +1,30 @@
+---
+title: "Read Me!"
+format: gfm
+editor: visual
+---
+
+## Penjelasan
+
+_Folder_ ini berisi algoritma untuk melakukan _clustering_ dari suatu kalimat dengan memanfaatkan LLM sebagai pembuat _ambedding matrix_. 
+
+Pada skrip `embedding.R`, saya hanya menuliskan algoritma sampai pembuatan _embedding matrix_ saja. Untuk melakukan _clustering_, kita bisa melakukan cara sebagai berikut:
+
+1. _k-means clustering_. Caranya:
+    - Pada _embedding matrix_ yang ada, lakukan _dimension reduction_ menggunakan `PCA` atau `t-SNE`. 
+    - Buat _k-means_ dari __dua atau tiga__ dimensi yang tereduksi.
+1. _Hierarchical clustering_. Caranya:
+    - Langsung buat _dendogram_ dari _embedding matrix_.
+    - Tentukan berapa banyak _cluster_ dari _dendogram_ tersebut.
+    
+## Cara Pakai
+
+Pastikan semua _libraries_ ter-_install_ dan _setting_ awal pada `read me` di _folder_ awal sudah dilakukan.
+
+Masukkan semua kalimat yang hendak dikelompokkan pada _file_ `komplen.txt`. Pisahkan dengan spasi ke bawah (`enter`).
+
+_Run_ skrip:
+
+```
+source("embedding.R")
+```
