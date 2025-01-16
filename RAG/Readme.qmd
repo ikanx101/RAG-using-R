@@ -1,0 +1,11 @@
+---
+title: "Read Me"
+format: gfm
+editor: visual
+---
+
+## Penjelasan Umum
+
+Algoritma ini adalah algoritma untuk melakukan _Retrieval-Augmenten Generation_ (__RAG__) __LLM__.
+
+Jadi mencari informasi dari dokumen internal yang di-_embed_ sebelumnya.
