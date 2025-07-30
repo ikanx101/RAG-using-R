@@ -5,7 +5,7 @@ library(dplyr)
 library(tidyr)
 library(rvest)
 
-setwd("~/RAG-using-R/RAG - blog")
+setwd("~/RAG-using-R/4 RAG - blog deepseek")
 
 elemen = ".page__content p"
 load("url.rda")
@@ -25,8 +25,8 @@ ambil_teks = function(i){
 artikel = c()
 for(i in 1:length(link)){
   new_    = ambil_teks(i)
-  Sys.sleep(2)
+  # Sys.sleep(.5)
   artikel = c(new_,artikel)
   print(i)
 }
-save(artikel,file = "~/RAG-using-R/RAG - blog/texts/teks.rda")
+save(artikel,file = "~/RAG-using-R/4 RAG - blog deepseek/texts/teks.rda")

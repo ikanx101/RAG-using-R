@@ -6,7 +6,7 @@ library(tidyr)
 library(rvest)
 
 url = c("https://ikanx101.com/",
-        paste0("https://ikanx101.com/page",2:12,"/")
+        paste0("https://ikanx101.com/page",2:13,"/")
         )
 
 elemen = ".no_toc a"
@@ -27,5 +27,5 @@ for(i in 1:12){
   temp = c(temp_,temp)
 }
 
-setwd("~/RAG-using-R/RAG - blog")
+setwd("~/RAG-using-R/4 RAG - blog deepseek")
 save(temp,file = "url.rda")
