@@ -9,7 +9,7 @@ library(ellmer)
 library(ragnar)
 
 # pemanggilan deepseek
-Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
+Sys.setenv(DEEPSEEK_API_KEY="")
 
 chat_deepseek(
   system_prompt = NULL,
