@@ -9,7 +9,7 @@ library(ellmer)
 library(ragnar)
 
 # pemanggilan deepseek
-Sys.setenv(DEEPSEEK_API_KEY="")
+Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
 
 chat_deepseek(
   system_prompt = NULL,
@@ -32,8 +32,8 @@ chat_1 <- chat_deepseek()
 transformers = reticulate::import("sentence_transformers")
 
 # model pertama - transformers
-nama_model = "Thugpou/AES-Indonli-Improved"
-# nama_model = "naufalihsan/indonesian-sbert-large"
+# nama_model = "Thugpou/AES-Indonli-Improved"
+nama_model = "naufalihsan/indonesian-sbert-large"
 model = transformers$SentenceTransformer(nama_model)
 
 
@@ -71,11 +71,14 @@ mulai_donk = function(){
   dokumen = complaints[max_indices]
   dokumen = paste(dokumen,collapse = ". ")
   
-  prompt = paste0("Berdasarkan informasi ini: ",
+  prompt = paste0("Berdasarkan informasi berikut ini: ",
                   dokumen,
-                  "Tanpa mengambil data yang selain informasi di atas.",
                   "Jawablah pertanyaan ini: ",pertanyaan,
-                  "Tampilkan jawaban secara sederhana dan lugas. Buat dalam maksimal 3 paragraf tanpa melibatkan formula matematika."
+                  "ATURAN UTAMA: 
+                  1. Dilarang menggunakan knowledge pada Deepsek.
+                  2. Hanya gunakan informasi di atas. 
+                  3. Tampilkan jawaban secara sederhana dan lugas. 
+                  4. Buat dalam maksimal 3 paragraf tanpa melibatkan formula matematika."
                   )
   
   output = chat_1$chat(prompt)
