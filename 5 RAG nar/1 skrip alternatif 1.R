@@ -8,23 +8,26 @@ library(ellmer)
 library(rvest)
 library(stringr)
 
-Sys.setenv(OPENAI_API_KEY="")
+setwd("~/RAG-using-R/5 RAG nar")
 
-base_url = "https://ikanx101.com"
-pages    = ragnar_find_links(base_url)
-pages    = pages[grepl("blog",pages)]
+Sys.setenv(OPENAI_API_KEY="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")
+Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
+
+load("url.rda")
+pages = temp
 
 # Create and connect to a vector store
-store_location <- "pairedends.ragnar.duckdb"
-store <- ragnar_store_create(
+store_location = "ikanx101.com.duckdb"
+store = ragnar_store_create(
   store_location,
   embed = \(x) ragnar::embed_openai(x, model = "text-embedding-3-small")
 )
 
 # Read each website and chunk it up
-for (page in pages) {
-  message("ingesting: ", page)
-  chunks <- page |>
+for (i in 323:length(pages)) {
+  message("ingesting: ", pages[i])
+  chunks = 
+    pages[i] |>
     read_as_markdown() |>
     markdown_chunk(
       target_size = NA,
@@ -34,22 +37,72 @@ for (page in pages) {
   
   ragnar_store_insert(store, chunks)
 }
+
 # Build the index
 ragnar_store_build_index(store)
 
-store_location <- "pairedends.ragnar.duckdb"
-store <- ragnar_store_connect(store_location, read_only = TRUE)
+# connect into data
+store = ragnar_store_connect(store_location, read_only = TRUE)
 
-text <- "bagaimana cara mengakses internet via CLI?"
+# ini sebagai contoh kalau kita mau ambil topik relevan dari pertanyaan
+# menggunakan ragnar dan duckdb
 
-relevant_chunks <- ragnar_retrieve_vss(
+# masukkan pertanyaan
+text = readline("Mau tanya apa? ")
+
+# ambil relevant chunk
+relevant_chunks = ragnar_retrieve_vss(
   store,
   text,
-  top_k = 3
+  top_k = 2 # ambil top 3 konten yang paling relevan
 )
-relevant_chunks$origin
-relevant_chunks$context
 
+relevant_chunks$origin  %>% unique()
+relevant_chunks$context %>% unique()
+
+
+# alternatif 1
+prompt_ = stringr::str_squish(
+  "Berdasarkan informasi yang diberikan, jawablah pertanyaan ini dengan SYARAT berikut ini:
+   ATURAN UTAMA: 
+                  1. Dilarang menggunakan knowledge pada Deepsek.
+                  2. Hanya gunakan informasi di atas. 
+                  3. Tampilkan jawaban secara sederhana dan lugas. 
+                  4. Buat dalam maksimal 3 paragraf tanpa melibatkan formula matematika.
+                
+                Mulai jawaban dengan menuliskan kalimat: 
+                Menurut blog ikanx101.com
+                
+                Akhiri jawaban dengan menuliskan sumber blog dari informasi yang diberikan
+  ")
+
+chat <- ellmer::chat_openai(
+  prompt_,
+  model = "gpt-4.1-mini",
+  params = ellmer::params(temperature = .5)
+)
+
+# Register a retrieve tool with ellmer
+ragnar_register_tool_retrieve(chat, store, top_k = 5)
+
+live_browser(chat)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# alternatif tanpa duckdb
 # ambil teks
 ambil_teks = function(url){
   baca  = url %>% read_html()
@@ -64,7 +117,7 @@ ambil_teks = function(url){
 chat <- ellmer::chat_deepseek(system_prompt)
 artikel = c()
 
-for(i in 1:3){
+for(i in 1:nrow(relevant_chunks)){
   artikel = paste(artikel,
                   ambil_teks(relevant_chunks$origin[1]),
                   sep = "\n")
@@ -78,15 +131,18 @@ prompt = paste0("Berdasarkan informasi berikut ini: ",artikel,
                   1. Dilarang menggunakan knowledge pada Deepsek.
                   2. Hanya gunakan informasi di atas. 
                   3. Tampilkan jawaban secara sederhana dan lugas. 
-                  4. Buat dalam maksimal 3 paragraf tanpa melibatkan formula matematika.")
+                  4. Buat dalam maksimal 3 paragraf tanpa melibatkan formula matematika.
+                
+                Mulai jawaban dengan menuliskan kalimat: 
+                Menurut blog ikanx101.com")
 
 chat <- ellmer::chat_deepseek()
 chat$chat(prompt)
 
-
+live_console(chat)
 
 
 
 # untuk konek ke duckdb
-# store <- ragnar::ragnar_store_connect("pairedends.ragnar.duckdb", read_only = TRUE)
+store <- ragnar::ragnar_store_connect("pairedends.ragnar.duckdb", read_only = TRUE)
 
