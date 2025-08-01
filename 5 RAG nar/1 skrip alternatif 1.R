@@ -10,8 +10,8 @@ library(stringr)
 
 setwd("~/RAG-using-R/5 RAG nar")
 
-Sys.setenv(OPENAI_API_KEY="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")
-Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
+Sys.setenv(OPENAI_API_KEY="")
+Sys.setenv(DEEPSEEK_API_KEY="")
 
 load("url.rda")
 pages = temp
