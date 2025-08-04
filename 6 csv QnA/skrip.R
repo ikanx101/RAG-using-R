@@ -7,7 +7,7 @@ library(ellmer)
 library(rvest)
 library(stringr)
 
-Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
+Sys.setenv(DEEPSEEK_API_KEY="")
 
 prompt_viz = 
   stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
