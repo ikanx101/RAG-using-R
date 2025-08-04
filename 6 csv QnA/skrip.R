@@ -7,7 +7,7 @@ library(ellmer)
 library(rvest)
 library(stringr)
 
-Sys.setenv(DEEPSEEK_API_KEY="")
+Sys.setenv(DEEPSEEK_API_KEY="xxx")
 
 prompt_viz = 
   stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
@@ -18,7 +18,7 @@ chat_viz = chat_deepseek(system_prompt = prompt_viz)
 
 prompt_nar = 
   stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
-                       Berikan jawaban berupa coding yang jika dirun mendhasilkan narasi dan jawaban atas pertanyaan yang ditanyakan.
+                       Berikan jawaban berupa coding yang jika dirun menghasilkan narasi dan jawaban atas pertanyaan yang ditanyakan.
                        Berikan coding tanpa penjelasan sama sekali.")
 chat_nar = chat_deepseek(system_prompt = prompt_nar)
 
