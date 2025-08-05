@@ -7,13 +7,13 @@ library(ellmer)
 library(rvest)
 library(stringr)
 
-Sys.setenv(DEEPSEEK_API_KEY="xxx")
+# Sys.setenv(DEEPSEEK_API_KEY="xxx")
 
 prompt_viz = 
   stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
                        Berikan jawaban berupa coding visualisasi menggunakan library(ggplot2) tanpa penjelasan.
                        Berikan warna yang cerah dengan nuansa biru. 
-                       Selalu keluarkan label dalam setiap grafik yang dihasilkan.")
+                       Hilangkan tulisan ``` pada kode yang dikeluarkan")
 chat_viz = chat_deepseek(system_prompt = prompt_viz)
 
 prompt_nar = 
@@ -37,5 +37,14 @@ tanya = paste0( "Saya bekerja dengan dataset dengan karakteristik berikut:\n",
                input,
                "\n. Buat nama dataframe nya menjadi df dalam skrip.")
 
-chat_viz$chat(tanya)
+kode = chat_viz$chat(tanya)
+sink("tes.R")
+cat(kode)
+sink()
+source("tes.R")
+
+
+
+
+
 chat_nar$chat(tanya)

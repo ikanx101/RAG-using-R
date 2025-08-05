@@ -1,65 +1,118 @@
 library(shiny)
+library(tidyverse)
+library(httr)
+library(jsonlite)
+library(glue)
 
+rm(list=ls())
+
+source("pembuat narasi.R")
+
+prompt_viz = 
+  stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
+                       Berikan jawaban berupa coding visualisasi menggunakan library(ggplot2) tanpa penjelasan.
+                       Berikan grafik dengan warna-warna yang cerah. 
+                       Hilangkan tulisan ``` pada kode yang dikeluarkan")
+chat_viz = chat_deepseek(system_prompt = prompt_viz)
+
+# UI ----
 ui <- fluidPage(
-  titlePanel("Aplikasi Shiny dengan Eksekusi Kode Otomatis"),
+  titlePanel("Data Visualization Generator"),
   sidebarLayout(
     sidebarPanel(
-      h4("Kode R yang akan dijalankan:"),
-      tags$textarea(id = "input_code", 
-                    rows = 10, cols = 40,
-                    "summary(mtcars)\nplot(mtcars$mpg, mtcars$hp)"),
-      actionButton("run_btn", "Jalankan Kode")
+      h4("Created by ikanx101.com"),
+      fileInput("file", "Upload CSV File", accept = ".csv"),
+      textAreaInput("question", "Mau tanya apa?", rows = 3),
+      actionButton("generate", "Buat visualisasinya!"),
+      br(),
+      h4("Update: 4 Agustus 2025"),
+      br(),
+      textOutput("proses_kerja"),
+      width = 4
     ),
     mainPanel(
-      h4("Hasil Output:"),
-      verbatimTextOutput("code_output"),
-      br(),
-      plotOutput("plot_output")
+      h3("Data Summary"),
+      verbatimTextOutput("narration"),
+      h3("Generated Visualization"),
+      plotOutput("plot"),
+      h3("Generated R Code"),
+      verbatimTextOutput("code")
     )
   )
 )
 
+# Server ----
 server <- function(input, output, session) {
-  # Jalankan kode secara otomatis saat aplikasi dimuat
-  observe({
-    # Jalankan kode default saat pertama kali dimuat
-    code <- isolate(input$input_code)
+  # Reactive untuk membaca data
+  data <- reactive({
+    req(input$file)
+    read_csv(input$file$datapath)
+  })
+  
+  # Output narasi
+  output$narration <- renderPrint({
+    req(data())
+    generate_narration(data())
+  })
+  
+  # Query ke Deepseek API
+  query_deepseek <- function(narration, question) {
+    prompt <- glue::glue(
+      "Saya memiliki dataset dengan karakteristik berikut:\n\n{narration}\n\n",
+      "Pertanyaan saya: {question}\n\n",
+      "Bantu saya membuat visualisasi data di R menggunakan ggplot2 yang sesuai untuk menjawab pertanyaan ini. ",
+      "Berikan hanya kode R lengkap yang bisa langsung dijalankan, tanpa penjelasan tambahan. ",
+      "Gunakan data frame dengan nama 'df'. Pastikan kode termasuk semua library yang diperlukan."
+    )
     
+    chat_viz$chat(prompt)
+  }
+  
+  
+  # Query ke explain Deepseek API
+  explain_deepseek <- function(code) {
+    prompt <- glue::glue(
+      "{code}\n\n",
+      'Jelaskan proses kerja dari kode di atas.',
+      'Jangan ada kode lagi dalam jawaban ini.',
+      'Buat dalam bentuk cerita narasi singkat maksimal 2 paragraf.'
+    )
+    
+    chat_viz$chat(prompt)
+  }
+  
+  # Generate plot dan kode ketika tombol ditekan
+  observeEvent(input$generate, {
+    req(input$question, data())
+    
+    # Dapatkan narasi
+    narration <- generate_narration(data())
+    
+    # Dapatkan kode dari API
     tryCatch({
-      # Jalankan kode dan tangkap output teks
-      output$code_output <- renderPrint({
-        eval(parse(text = code))
-      })
+      code <- query_deepseek(narration, input$question)
       
-      # Tangkap plot jika ada
-      output$plot_output <- renderPlot({
-        eval(parse(text = code))
-      })
+      penjelasan = explain_deepseek(code)
+      
+      # Simpan kode untuk ditampilkan
+      output$code <- renderText(code)
+      output$proses_kerja = renderText(penjelasan)
+      
+      
+      # Evaluasi kode untuk menghasilkan plot
+      df <- data()  # Buat df tersedia untuk kode yang dihasilkan
+      plot <- eval(parse(text = code))
+      output$plot <- renderPlot(plot)
     }, error = function(e) {
-      output$code_output <- renderPrint({
-        paste("Error:", e$message)
-      })
+      showNotification("Error generating visualization. Please try again.", type = "error")
     })
   })
   
-  # Jalankan kode saat tombol ditekan
-  observeEvent(input$run_btn, {
-    code <- input$input_code
-    
-    tryCatch({
-      output$code_output <- renderPrint({
-        eval(parse(text = code))
-      })
-      
-      output$plot_output <- renderPlot({
-        eval(parse(text = code))
-      })
-    }, error = function(e) {
-      output$code_output <- renderPrint({
-        paste("Error:", e$message)
-      })
-    })
-  })
+  
+  
+  
+  
 }
 
-shinyApp(ui = ui, server = server)
+# Run app ----
+shinyApp(ui, server)
