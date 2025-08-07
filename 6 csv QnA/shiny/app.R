@@ -3,6 +3,7 @@ library(tidyverse)
 library(httr)
 library(jsonlite)
 library(glue)
+library(DT)
 
 rm(list=ls())
 
@@ -10,9 +11,10 @@ source("pembuat narasi.R")
 
 prompt_viz = 
   stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
-                       Berikan jawaban berupa coding visualisasi menggunakan library(ggplot2) tanpa penjelasan.
+                       Berikan jawaban berupa coding visualisasi menggunakan library(ggplot2) atau library turunan ggplot2 lainnya tanpa penjelasan.
                        Berikan grafik dengan warna-warna yang cerah. 
-                       Hilangkan tulisan ``` pada kode yang dikeluarkan")
+                       Buat hanya 1 grafik saja sebagai output.
+                       Hilangkan tulisan ```r dan ``` pada kode yang dikeluarkan")
 chat_viz = chat_deepseek(system_prompt = prompt_viz)
 
 # UI ----
@@ -22,6 +24,7 @@ ui <- fluidPage(
     sidebarPanel(
       h4("Created by ikanx101.com"),
       fileInput("file", "Upload CSV File", accept = ".csv"),
+      textAreaInput("context", "Data Context", placeholder = "Describe the context of your data"),
       textAreaInput("question", "Mau tanya apa?", rows = 3),
       actionButton("generate", "Buat visualisasinya!"),
       br(),
@@ -31,12 +34,17 @@ ui <- fluidPage(
       width = 4
     ),
     mainPanel(
-      h3("Data Summary"),
-      verbatimTextOutput("narration"),
-      h3("Generated Visualization"),
-      plotOutput("plot"),
-      h3("Generated R Code"),
-      verbatimTextOutput("code")
+      tabsetPanel(
+        tabPanel("Data Preview", 
+                 h3("Data Summary"),
+                 verbatimTextOutput("narration"),
+                 DTOutput("preview")),
+        tabPanel("Output Visualisasi dan Kode",
+                 h3("Generated Visualization"),
+                 plotOutput("plot"),
+                 h3("Generated R Code"),
+                 verbatimTextOutput("code"))
+      )
     )
   )
 )
@@ -55,14 +63,19 @@ server <- function(input, output, session) {
     generate_narration(data())
   })
   
+  output$preview <- renderDT({
+    datatable(head(data()), options = list(dom = 't'))
+  })
+  
   # Query ke Deepseek API
-  query_deepseek <- function(narration, question) {
+  query_deepseek <- function(narration, question,konteks) {
     prompt <- glue::glue(
-      "Saya memiliki dataset dengan karakteristik berikut:\n\n{narration}\n\n",
+      "Saya memiliki dataset dengan konteks {konteks} karakteristik berikut:\n\n{narration}\n\n",
       "Pertanyaan saya: {question}\n\n",
-      "Bantu saya membuat visualisasi data di R menggunakan ggplot2 yang sesuai untuk menjawab pertanyaan ini. ",
+      "Bantu saya membuat visualisasi data di R menggunakan ggplot2 atau library turunan ggplot2 lainnya yang sesuai untuk menjawab pertanyaan ini. ",
       "Berikan hanya kode R lengkap yang bisa langsung dijalankan, tanpa penjelasan tambahan. ",
-      "Gunakan data frame dengan nama 'df'. Pastikan kode termasuk semua library yang diperlukan."
+      "Gunakan data frame dengan nama 'df'. Pastikan kode termasuk semua library yang diperlukan.",
+      "Hilangkan tulisan ```r dan ``` pada kode yang dikeluarkan"
     )
     
     chat_viz$chat(prompt)
@@ -75,7 +88,8 @@ server <- function(input, output, session) {
       "{code}\n\n",
       'Jelaskan proses kerja dari kode di atas.',
       'Jangan ada kode lagi dalam jawaban ini.',
-      'Buat dalam bentuk cerita narasi singkat maksimal 2 paragraf.'
+      'Buat dalam bentuk cerita narasi singkat maksimal 2 paragraf.',
+      'Jangan jelaskan tentang warna, judul, dan segala bentuk label.'
     )
     
     chat_viz$chat(prompt)
@@ -90,7 +104,7 @@ server <- function(input, output, session) {
     
     # Dapatkan kode dari API
     tryCatch({
-      code <- query_deepseek(narration, input$question)
+      code <- query_deepseek(narration, input$question,input$context)
       
       penjelasan = explain_deepseek(code)
       
