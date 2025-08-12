@@ -46,7 +46,7 @@ ui <- fluidPage(
                  verbatimTextOutput("narration"),
                  DTOutput("preview"),
                  br(),
-                 h5("Saran analisa yang bisa dilakukan:")
+                 h5("Saran analisa yang bisa dilakukan:"),
                  verbatimTextOutput("saran_analisa")),
         tabPanel("Output Visualisasi dan Kode",
                  h3("Visualisasi"),
