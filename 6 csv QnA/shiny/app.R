@@ -27,11 +27,9 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Upload CSV File", accept = ".csv"),
-      textAreaInput("context", "Data Context", 
-                    placeholder = "Jelaskan dan berikan konteks pada data Anda",
+      textAreaInput("context", "Jelaskan dan berikan konteks pada data Anda",
                     rows = 4),
       textAreaInput("question", "Mau tanya apa?", 
-                    placeholder = "Mau tanya apa?",
                     rows = 4),
       actionButton("generate", "Buat visualisasinya!"),
       br(),
@@ -83,8 +81,8 @@ server <- function(input, output, session) {
     prompt <- glue::glue(
       "Saya memiliki dataset dengan konteks {konteks} karakteristik berikut:\n\n{narration}\n\n",
       "Pertanyaan saya: {question}\n\n",
-      "Bantu saya membuat visualisasi data di R menggunakan ggplot2 atau library turunan ggplot2 lainnya yang sesuai untuk menjawab pertanyaan ini. ",
-      "Berikan hanya kode R lengkap yang bisa langsung dijalankan, tanpa penjelasan tambahan. ",
+      "Bantu saya membuat visualisasi data di R menggunakan ggplot2 atau library turunan ggplot2 lainnya yang sesuai untuk menjawab pertanyaan ini.",
+      "Berikan hanya kode R lengkap yang bisa langsung dijalankan, tanpa penjelasan tambahan.",
       "Gunakan data frame dengan nama 'df'. Pastikan kode termasuk semua library yang diperlukan.",
       "Hilangkan tulisan ```r dan ``` pada kode yang dikeluarkan"
     )
@@ -143,12 +141,9 @@ server <- function(input, output, session) {
       plot <- eval(parse(text = code))
       output$plot <- renderPlot(plot)
     }, error = function(e) {
-      showNotification("Error generating visualization. Please try again.", type = "error")
+      showNotification("Ada error, ulangi lagi ya.", type = "error")
     })
   })
-  
-  
-  
   
   
 }
