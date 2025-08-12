@@ -69,7 +69,7 @@ generate_narration <- function(data) {
   narrative <- c(
     narrative,
     "\nContoh Data:",
-    capture.output(print(head(data), n = 3))
+    capture.output(print(head(data,3),row.names = F))
   )
   
   return(paste(narrative, collapse = "\n"))

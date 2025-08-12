@@ -4,8 +4,12 @@ library(httr)
 library(jsonlite)
 library(glue)
 library(DT)
+library(ellmer)
+library(ragnar)
 
 rm(list=ls())
+
+Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
 
 source("pembuat narasi.R")
 
@@ -54,7 +58,7 @@ server <- function(input, output, session) {
   # Reactive untuk membaca data
   data <- reactive({
     req(input$file)
-    read_csv(input$file$datapath)
+    read.csv(input$file$datapath)
   })
   
   # Output narasi

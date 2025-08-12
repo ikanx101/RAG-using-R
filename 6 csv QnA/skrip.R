@@ -7,7 +7,7 @@ library(ellmer)
 library(rvest)
 library(stringr)
 
-# Sys.setenv(DEEPSEEK_API_KEY="")
+Sys.setenv(DEEPSEEK_API_KEY="sk-24d2a5762f0841d0abcf39e018034d69")
 
 prompt_viz = 
   stringr::str_squish("Kamu adalah expert dalam bahasa R dengan spesialisasi di Tidyverse. 
@@ -27,7 +27,7 @@ source("pembuat narasi.R")
 file = "data WC.csv"
 df   = read.csv(file)
 
-info = generate_data_narrative(file)
+info = generate_narration(df)
 cat(info)
 
 input = readline("Mau tanya apa?")
