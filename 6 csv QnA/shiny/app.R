@@ -23,16 +23,20 @@ chat_viz = chat_deepseek(system_prompt = prompt_viz)
 
 # UI ----
 ui <- fluidPage(
-  titlePanel("Data Visualization Generator"),
+  titlePanel("ikanx101.com Visualization Generator"),
   sidebarLayout(
     sidebarPanel(
-      h4("Created by ikanx101.com"),
       fileInput("file", "Upload CSV File", accept = ".csv"),
-      textAreaInput("context", "Data Context", placeholder = "Describe the context of your data"),
-      textAreaInput("question", "Mau tanya apa?", rows = 3),
+      textAreaInput("context", "Data Context", 
+                    placeholder = "Jelaskan dan berikan konteks pada data Anda",
+                    rows = 4),
+      textAreaInput("question", "Mau tanya apa?", 
+                    placeholder = "Mau tanya apa?",
+                    rows = 4),
       actionButton("generate", "Buat visualisasinya!"),
       br(),
-      h4("Update: 4 Agustus 2025"),
+      h5("Created by ikanx101.com"),
+      h6("Update: 12 Agustus 2025"),
       br(),
       textOutput("proses_kerja"),
       width = 4
@@ -42,11 +46,14 @@ ui <- fluidPage(
         tabPanel("Data Preview", 
                  h3("Data Summary"),
                  verbatimTextOutput("narration"),
-                 DTOutput("preview")),
+                 DTOutput("preview"),
+                 br(),
+                 h5("Saran analisa yang bisa dilakukan:")
+                 verbatimTextOutput("saran_analisa")),
         tabPanel("Output Visualisasi dan Kode",
-                 h3("Generated Visualization"),
+                 h3("Visualisasi"),
                  plotOutput("plot"),
-                 h3("Generated R Code"),
+                 h3("R Codes"),
                  verbatimTextOutput("code"))
       )
     )
@@ -85,7 +92,6 @@ server <- function(input, output, session) {
     chat_viz$chat(prompt)
   }
   
-  
   # Query ke explain Deepseek API
   explain_deepseek <- function(code) {
     prompt <- glue::glue(
@@ -94,6 +100,18 @@ server <- function(input, output, session) {
       'Jangan ada kode lagi dalam jawaban ini.',
       'Buat dalam bentuk cerita narasi singkat maksimal 2 paragraf.',
       'Jangan jelaskan tentang warna, judul, dan segala bentuk label.'
+    )
+    
+    chat_viz$chat(prompt)
+  }
+  
+  # Query minta saran Deepseek API
+  saran_deepseek <- function(narration,konteks) {
+    prompt <- glue::glue(
+      "Saya memiliki dataset dengan konteks {konteks} karakteristik berikut:\n\n{narration}\n\n",
+      "Kamu adalah analis data yang berpengalaman 10 tahun di bidang market riset, data analisis, dan data exploration.",
+      "Berdasarkan dataset yang saya jelaskan, Berikan saya 5 saran analisa data yang bisa saya lakukan. Sajikan dalam poin-poin yang singkat dan padat.",
+      "Jangan tambahkan knowledge di luar informasi yang saya berikan."
     )
     
     chat_viz$chat(prompt)
@@ -108,14 +126,17 @@ server <- function(input, output, session) {
     
     # Dapatkan kode dari API
     tryCatch({
+      # generate code
       code <- query_deepseek(narration, input$question,input$context)
-      
+      # explain the code
       penjelasan = explain_deepseek(code)
+      # kasih saran analisa
+      analisa_saran = saran_deepseek(narration,input$context)
       
       # Simpan kode untuk ditampilkan
-      output$code <- renderText(code)
-      output$proses_kerja = renderText(penjelasan)
-      
+      output$code          = renderText(code)
+      output$proses_kerja  = renderText(penjelasan)
+      output$saran_analisa = renderText(analisa_saran)
       
       # Evaluasi kode untuk menghasilkan plot
       df <- data()  # Buat df tersedia untuk kode yang dihasilkan
